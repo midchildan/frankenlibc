@@ -26,7 +26,7 @@ run:			$(OBJ)
 			${REXEC} $(OBJDIR)/ctor disk.img
 			echo frankenlibc | ${REXEC} $(OBJDIR)/cat disk.img
 ifneq ($(wildcard $(OBJDIR)/ping),)
-			${REXEC} ${OBJDIR}/ping disk.img -- -c 3 127.0.0.1
+			${REXEC} ${OBJDIR}/ping disk.img # -- -c 3 127.0.0.1
 			${REXEC} ${OBJDIR}/ping6 disk.img -- -c 3 ::1
 endif
 			rm -f disk.img
