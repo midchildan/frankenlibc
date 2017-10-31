@@ -11,6 +11,7 @@ CFLAGS+=-g
 DEPS=$(LIBDIR)/libc.a
 
 OBJ=$(OBJDIR)/hello $(OBJDIR)/ctor $(OBJDIR)/cat #$(OBJDIR)/hello-pthread
+OBJ+=$(OBJDIR)/dbg_shell
 
 default:		$(OBJ)
 
@@ -46,6 +47,10 @@ $(OBJDIR)/hello-pthread: hello-pthread.c $(DEPS)
 $(OBJDIR)/cat:		cat.c $(DEPS)
 			@mkdir -p $(OBJDIR)
 			${CC} ${CFLAGS} ${LDFLAGS} -o $@ cat.c
+
+$(OBJDIR)/dbg_shell:	dbg_shell.c $(DEPS)
+			@mkdir -p $(OBJDIR)
+			${CC} ${CFLAGS} ${LDFLAGS} -o $@ dbg_shell.c
 
 .PHONY:			test clean
 clean:		
