@@ -1,9 +1,13 @@
-ENTRY(_Reset)
+ENTRY(_start)
 SECTIONS
 {
 	. = 0x10000;
+	__kernel_start = .;
 	.startup . : { startup.o(.text) }
-	.text : { *(.text) }
+	.text : {
+	  *(.text)
+	  _etext = .;
+	}
 	.rodata :
 	AT (LOADADDR(.text) + (ADDR(.rodata) - ADDR(.text)))
 	{
@@ -23,10 +27,17 @@ SECTIONS
 		*(.fini_array)
 		__fini_array_end = . ;
 	}
+	.ARM.exidx :
+	{
+		__exidx_start = .;
+		*(.ARM.exidx*)
+		__exidx_end = .;
+	}
 
 	.data : { *(.data) }
 	.bss : { *(.bss COMMON) }
 	. = ALIGN(8);
 	. = . + 0x10000; /* 64kB stack */
 	stack_top = .;
+	__kernel_end = .;
 }

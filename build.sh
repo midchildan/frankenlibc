@@ -523,6 +523,7 @@ else
 		-e "s#@AFLAGS@#${EXTRA_AFLAGS}#g" \
 		-e "s#@CFLAGS@#${EXTRA_CFLAGS}#g" \
 		-e "s#@LDFLAGS@#${EXTRA_LDFLAGS}#g" \
+		-e "s#@PLATFORM_LDFLAGS@#${PLATFORM_LDFLAGS}#g" \
 		-e "s#@LDSCRIPT@#${EXTRA_LDSCRIPT}#g" \
 		-e "s#@UNDEF@#${UNDEF}#g" \
 		-e "s#@STARTFILE@#${STARTFILE}#g" \

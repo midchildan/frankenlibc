@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <circle/startup.h>
 
 void _exit(int status)
 {
@@ -8,10 +9,15 @@ void _exit(int status)
 				     "svc 0x00123456;\n"
 				     ::: "r0", "r1");
 	}
-
 	__asm__ __volatile__("mov r0, #0x18;\n"
 			     "mov r1, %0\n"
 			     "svc 0x00123456;\n"
 			     :: "r"(status)
 			     : "r0", "r1");
+
+	if (status == EXIT_REBOOT)
+	{
+		reboot();
+	}
+	halt();
 }

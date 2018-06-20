@@ -1,5 +1,8 @@
 COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
+COMPILE.cc?=$(CXX) -c $(CPPFLAGS) $(CXXFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
+MAKE?=make
+INSTALL?=install
 RUMPOBJ?=../../rumpobj
 OBJDIR=$(RUMPOBJ)/platform
 RUMP?=$(RUMPOBJ)/rump
@@ -34,22 +37,25 @@ OBJ+=$(OBJDIR)/read.o
 OBJ+=$(OBJDIR)/readv.o
 OBJ+=$(OBJDIR)/write.o
 OBJ+=$(OBJDIR)/writev.o
-HEADERS=$(CRTDIR) $(OBJDIR)
+OBJ+=$(CIRCLE_DIR)/libcircle.a
+OBJ+=$(CIRCLE_DIR)/libcircle_net.a
+OBJ+=$(CIRCLE_DIR)/libcircle_usb.a
+HEADERS=$(CRTDIR) $(OBJDIR) $(CIRCLE_DIR)
 INCLUDES=-I../include -I../../franken/include -I.
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
+CXXFLAGS+=-fno-stack-protector
 RANLIB?=ranlib
+CIRCLE_DIR?=$(RUMPOBJ)/circle
+CIRCLE_FLAGS?=RASPPI=2 FLOAT_ABI=softfp STDLIB_SUPPORT=2 ARCH=
 
 default:			$(OBJ)
 
-$(OBJDIR):			
-				mkdir -p $(OBJDIR)
+$(OBJDIR) $(CRTDIR) $(CIRCLE_DIR):			
+				mkdir -p $@
 
-$(CRTDIR):			
-				mkdir -p $(CRTDIR)
-
-$(CRTDIR)/startup.o:		startup.s $(HEADERS)
-				$(COMPILE.S) -o $@ startup.s
+$(CRTDIR)/startup.o:		circle/lib/startup.o $(HEADERS)
+				$(INSTALL) $< $@
 
 $(CRTDIR)/crt0.o:		$(CRTDIR)
 				printf "\n" | $(COMPILE.c) -o $@ -x c -
@@ -144,6 +150,27 @@ $(OBJDIR)/write.o:		write.c $(HEADERS)
 $(OBJDIR)/writev.o:		writev.c $(HEADERS)
 				$(COMPILE.c) -o $@ writev.c
 
+$(CIRCLE_DIR)/libcircle.a: 	circle/lib/libcircle.a $(HEADERS)
+				$(INSTALL) $< $@
+
+$(CIRCLE_DIR)/libcircle_net.a:	circle/lib/net/libnet.a $(HEADERS)
+				$(INSTALL) $< $@
+
+$(CIRCLE_DIR)/libcircle_usb.a:	circle/lib/usb/libusb.a $(HEADERS)
+				$(INSTALL) $< $@
+
+circle/lib/libcircle.a circle/lib/startup.o:
+				$(MAKE) -C circle/lib $(CIRCLE_FLAGS)
+
+circle/lib/net/libnet.a:
+				$(MAKE) -C circle/lib/net $(CIRCLE_FLAGS)
+
+circle/lib/usb/libusb.a:
+				$(MAKE) -C circle/lib/usb $(CIRCLE_FLAGS)
+
 .PHONY:				clean
 clean:		
 				rm -f $(OBJ)
+				$(MAKE) -C circle/lib clean
+				$(MAKE) -C circle/lib/net clean
+				$(MAKE) -C circle/lib/usb clean

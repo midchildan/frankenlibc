@@ -4,3 +4,6 @@
 [submodule "musl"]
 	path = musl
 	url = git://github.com/libos-nuse/musl.git
+[submodule "platform/qemu-arm/circle"]
+	path = platform/qemu-arm/circle
+	url = https://github.com/rsta2/circle.git
