@@ -6,6 +6,7 @@ INSTALL?=install
 RUMPOBJ?=../../rumpobj
 OBJDIR=$(RUMPOBJ)/platform
 RUMP?=$(RUMPOBJ)/rump
+CIRCLE_DIR?=$(RUMPOBJ)/circle
 CRTDIR=$(RUMP)/lib
 CRTFILES=$(CRTDIR)/startup.o $(CRTDIR)/crt0.o
 CRTFILES+=$(CRTDIR)/crti.o $(CRTDIR)/crtn.o
@@ -41,12 +42,11 @@ OBJ+=$(CIRCLE_DIR)/libcircle.a
 OBJ+=$(CIRCLE_DIR)/libcircle_net.a
 OBJ+=$(CIRCLE_DIR)/libcircle_usb.a
 HEADERS=$(CRTDIR) $(OBJDIR) $(CIRCLE_DIR)
-INCLUDES=-I../include -I../../franken/include -I.
+INCLUDES=-I../include -I../../franken/include -I -I. -I./circle/include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 CXXFLAGS+=-fno-stack-protector
 RANLIB?=ranlib
-CIRCLE_DIR?=$(RUMPOBJ)/circle
 CIRCLE_FLAGS?=RASPPI=2 FLOAT_ABI=softfp STDLIB_SUPPORT=2 ARCH=
 
 default:			$(OBJ)
