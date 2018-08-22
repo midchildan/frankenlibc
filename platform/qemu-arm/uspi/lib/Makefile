@@ -27,8 +27,8 @@ OBJS	= uspilibrary.o \
 	  dwhcirootport.o usbmouse.o \
 	  dwhciframeschednsplit.o usbgamepad.o synchronize.o usbstring.o usbmidi.o
 
-libuspi.a: $(OBJS)
-	rm -f libuspi.a
-	$(AR) cr libuspi.a $(OBJS)
+libuspi.o: $(OBJS)
+	rm -f libuspi.o
+	$(LD) -r $(OBJS) -o libuspi.o
 
 include ../Rules.mk

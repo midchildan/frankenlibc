@@ -29,7 +29,12 @@ typedef int		boolean;
 #define FALSE		0
 #define TRUE		1
 
+#if FRANKEN == 0
 typedef unsigned long	size_t;
 typedef long		ssize_t;
+#else
+#include <stddef.h>
+#include <stdint.h>
+#endif
 
 #endif

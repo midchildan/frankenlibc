@@ -24,7 +24,7 @@
 
 	.globl	\name
 \name:
-	mov	sp, #MEM_ABORT_STACK
+	ldr	sp, =MEM_ABORT_STACK
 	sub	lr, lr, #\pc_offset		/* lr: correct PC of aborted program */
 	stmfd	sp!, {lr}			/* store PC onto stack */
 	mrs	lr, spsr			/* lr can be overwritten now */
@@ -58,7 +58,7 @@
  */
 	.globl	IRQStub
 IRQStub:
-	mov	sp, #MEM_IRQ_STACK
+	ldr	sp, =MEM_IRQ_STACK
 	sub	lr, lr, #4			/* lr: return address */
 	stmfd	sp!, {r0-r12, lr}		/* save r0-r12 and return address */
 	bl	InterruptHandler

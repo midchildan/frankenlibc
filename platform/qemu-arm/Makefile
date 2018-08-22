@@ -1,5 +1,7 @@
 COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
+MAKE?=make
+INSTALL?=install
 RUMPOBJ?=../../rumpobj
 OBJDIR=$(RUMPOBJ)/platform
 RUMP?=$(RUMPOBJ)/rump
@@ -35,10 +37,15 @@ OBJ+=$(OBJDIR)/readv.o
 OBJ+=$(OBJDIR)/write.o
 OBJ+=$(OBJDIR)/writev.o
 HEADERS=$(CRTDIR) $(OBJDIR)
-INCLUDES=-I../include -I../../franken/include -I.
+INCLUDES=$(addprefix -I,$(realpath ../include ../../franken/include .))
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 RANLIB?=ranlib
+
+LIBUSPI=$(OBJDIR)/uspi.o $(OBJDIR)/uspienv.o
+USPI_CFLAGS=$(addprefix -I,$(realpath ./uspi/include ./uspi/env/include)) -DFRANKEN=1
+USPI_BUILD?=RASPPI=2
+OBJ+=$(LIBUSPI)
 
 default:			$(OBJ)
 
@@ -48,8 +55,8 @@ $(OBJDIR):
 $(CRTDIR):			
 				mkdir -p $(CRTDIR)
 
-$(CRTDIR)/startup.o:		startup.s $(HEADERS)
-				$(COMPILE.S) -o $@ startup.s
+$(CRTDIR)/startup.o:		uspi/env/lib/startup.o $(HEADERS)
+				$(INSTALL) $< $@
 
 $(CRTDIR)/crt0.o:		$(CRTDIR)
 				printf "\n" | $(COMPILE.c) -o $@ -x c -
@@ -106,7 +113,7 @@ $(OBJDIR)/kill.o:		kill.c $(HEADERS)
 				$(COMPILE.c) -o $@ kill.c
 
 $(OBJDIR)/__libc_start_main.o:	__libc_start_main.c $(HEADERS)
-				$(COMPILE.c) -o $@ __libc_start_main.c
+				$(COMPILE.c) $(USPI_CFLAGS) -o $@ __libc_start_main.c
 
 $(OBJDIR)/lseek.o:		lseek.c $(HEADERS)
 				$(COMPILE.c) -o $@ lseek.c
@@ -144,6 +151,19 @@ $(OBJDIR)/write.o:		write.c $(HEADERS)
 $(OBJDIR)/writev.o:		writev.c $(HEADERS)
 				$(COMPILE.c) -o $@ writev.c
 
-.PHONY:				clean
+$(OBJDIR)/uspi.o:		$(HEADERS)
+				$(MAKE) -C uspi/lib libuspi.o $(USPI_BUILD)
+				$(INSTALL) uspi/lib/libuspi.o $@
+
+$(OBJDIR)/uspienv.o:		$(HEADERS)
+				$(MAKE) -C uspi/env/lib libuspienv.o $(USPI_BUILD)
+				$(INSTALL) uspi/env/lib/libuspienv.o $@
+
+uspi/env/lib/startup.o:
+				$(MAKE) -C uspi/env/lib startup.o
+
+.PHONY:				clean $(LIBUSPI) uspi/env/lib/startup.o
 clean:		
 				rm -f $(OBJ)
+				$(MAKE) -C uspi/lib clean
+				$(MAKE) -C uspi/env/lib clean

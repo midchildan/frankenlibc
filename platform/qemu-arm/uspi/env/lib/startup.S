@@ -21,6 +21,8 @@
  */
 #include <uspienv/sysconfig.h>
 
+.extern sysinit
+
 /*
  * Helper macro to enter SVC mode cleanly and mask interrupts. reg is
  * a scratch register for the macro to overwrite.
@@ -53,8 +55,10 @@ _start:
 	safe_svcmode_maskall r0
 
 	cps	#0x1F				/* set system mode */
-	mov	sp, #MEM_KERNEL_STACK
-	b	sysinit
+	ldr	sp, =MEM_KERNEL_STACK
+	bl	sysinit
+	ldr	sp,=stack_top
+	bl	__libc_start_main
 
 #if RASPPI != 1
 	

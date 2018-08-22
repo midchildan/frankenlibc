@@ -28,12 +28,12 @@ OBJS	= alloc.o assert.o bcmmailbox.o bcmframebuffer.o bcmpropertytags.o chargene
 	  string.o synchronize.o sysinit.o timer.o uspibind.o uspienv.o util.o util_fast.o \
 	  memory.o pagetable.o exceptionhandler.o
 
-all: startup.o libuspienv.a
+all: startup.o libuspienv.o
 
 startup.o: startup.S
 
-libuspienv.a: $(OBJS)
+libuspienv.o: $(OBJS)
 	rm -f $@
-	$(AR) cr $@ $(OBJS)
+	$(LD) -r -o $@ $(OBJS)
 
 include $(USPIHOME)/Rules.mk

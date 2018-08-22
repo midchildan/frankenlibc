@@ -25,6 +25,7 @@ endif
 -include $(USPIHOME)/Config.mk
 
 RASPPI	?= 1
+FRANKEN ?= 0
 PREFIX	?= arm-none-eabi-
 
 CC	= $(PREFIX)gcc
@@ -32,17 +33,9 @@ AS	= $(CC)
 LD	= $(PREFIX)ld
 AR	= $(PREFIX)ar
 
-ifeq ($(strip $(RASPPI)),1)
-ARCH	?= -march=armv6j -mtune=arm1176jzf-s -mfloat-abi=hard 
-else ifeq ($(strip $(RASPPI)),2)
-ARCH	?= -march=armv7-a -mtune=cortex-a7 -mfloat-abi=hard
-else
-ARCH	?= -march=armv8-a -mtune=cortex-a53 -mfloat-abi=hard
-endif
-
 OPTIMIZE ?= -O2
 
-AFLAGS	+= $(ARCH) -DRASPPI=$(RASPPI)
+AFLAGS	+= $(ARCH) -DRASPPI=$(RASPPI) -DFRANKEN=$(FRANKEN)
 CFLAGS	+= $(ARCH) -Wall -Wno-psabi -fsigned-char -fno-builtin -nostdinc -nostdlib \
 	   -std=gnu99 -undef -DRASPPI=$(RASPPI) -I $(USPIHOME)/include $(OPTIMIZE) #-DNDEBUG
 

@@ -2,8 +2,10 @@ ENTRY(_Reset)
 SECTIONS
 {
 	. = 0x10000;
+	__kernel_start = .;
 	.startup . : { startup.o(.text) }
 	.text : { *(.text) }
+	_etext = .;
 	.rodata :
 	AT (LOADADDR(.text) + (ADDR(.rodata) - ADDR(.text)))
 	{
@@ -28,5 +30,6 @@ SECTIONS
 	.bss : { *(.bss COMMON) }
 	. = ALIGN(8);
 	. = . + 0x10000; /* 64kB stack */
+	__kernel_end = .;
 	stack_top = .;
 }

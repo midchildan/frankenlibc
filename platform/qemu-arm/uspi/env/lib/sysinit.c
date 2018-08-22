@@ -61,6 +61,8 @@ void sysinit (void)
 	}
 #endif
 
+// leave it for frankenlibc
+#if 0
 	// clear BSS
 	extern unsigned char __bss_start;
 	extern unsigned char _end;
@@ -76,6 +78,7 @@ void sysinit (void)
 	}
 
 	halt ();
+#endif
 }
 
 #ifdef __cplusplus
