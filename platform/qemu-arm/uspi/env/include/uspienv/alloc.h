@@ -27,6 +27,9 @@
 extern "C" {
 #endif
 
+#define malloc uspi_malloc
+#define free uspi_free
+
 void mem_init (unsigned long ulBase, unsigned long ulSize);
 
 unsigned long mem_get_size (void);

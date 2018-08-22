@@ -26,6 +26,16 @@
 extern "C" {
 #endif
 
+#define memset		uspi_memset
+#define memcpy		uspi_memcpy
+#define memcmp		uspi_memcmp
+
+#define strlen		uspi_strlen
+#define strcmp		uspi_strcmp
+#define strcpy		uspi_strcpy
+#define strncpy		uspi_strncpy
+#define strcat		uspi_strcat
+
 void *memset (void *pBuffer, int nValue, size_t nLength);
 
 void *memcpy (void *pDest, const void *pSrc, size_t nLength);
