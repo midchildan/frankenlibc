@@ -66,6 +66,7 @@ CIRCLE_DECLARE_SYMBOL(__kernel_end)
 #define ARM_STRICT_ALIGNMENT
 #define GPU_L2_CACHE_ENABLED
 #else
+#define ARM_DISABLE_MMU
 #define CORES			4					// must be a power of 2
 #endif
 
