@@ -125,6 +125,18 @@ TLogger *LoggerGet (void)
 void LoggerWrite2 (TLogger *pThis, const char *pString)
 {
 	size_t nLength = strlen (pString);
+	size_t i;
 
 	ScreenDeviceWrite (pThis->m_pTarget, pString, nLength);
+
+#ifndef NDEBUG
+	for (i = 0; i < nLength; i++)
+	{
+		__asm__ __volatile__ (
+			"mov r0, #0x03;\n"
+			"mov r1, %0\n"
+			"svc 0x00123456;\n"
+			:: "r" (&pString[i]) :"r0", "r1");
+	}
+#endif
 }
