@@ -22,6 +22,8 @@
 #include <uspienv/sysconfig.h>
 
 .extern sysinit
+.extern stack_top
+.extern __libc_start_main
 
 /*
  * Helper macro to enter SVC mode cleanly and mask interrupts. reg is
@@ -50,15 +52,17 @@
 
 	.text
 
-	.globl	_start
-_start:
+	.globl	_uspi_start
+_uspi_start:
 	safe_svcmode_maskall r0
 
 	cps	#0x1F				/* set system mode */
 	ldr	sp, =MEM_KERNEL_STACK
 	bl	sysinit
-	ldr	sp,=stack_top
+
+	ldr	sp, =stack_top
 	bl	__libc_start_main
+	b	.
 
 #if RASPPI != 1
 	

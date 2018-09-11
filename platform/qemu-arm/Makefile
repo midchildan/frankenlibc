@@ -55,8 +55,8 @@ $(OBJDIR):
 $(CRTDIR):			
 				mkdir -p $(CRTDIR)
 
-$(CRTDIR)/startup.o:		uspi/env/lib/startup.o $(HEADERS)
-				$(INSTALL) $< $@
+$(CRTDIR)/startup.o:		startup.s $(HEADERS)
+				$(COMPILE.S) -o $@ startup.s
 
 $(CRTDIR)/crt0.o:		$(CRTDIR)
 				printf "\n" | $(COMPILE.c) -o $@ -x c -
@@ -159,10 +159,7 @@ $(OBJDIR)/uspienv.o:		$(HEADERS)
 				$(MAKE) -C uspi/env/lib libuspienv.o $(USPI_BUILD)
 				$(INSTALL) uspi/env/lib/libuspienv.o $@
 
-uspi/env/lib/startup.o:
-				$(MAKE) -C uspi/env/lib startup.o
-
-.PHONY:				clean $(LIBUSPI) uspi/env/lib/startup.o
+.PHONY:				clean $(LIBUSPI)
 clean:		
 				rm -f $(OBJ)
 				$(MAKE) -C uspi/lib clean
