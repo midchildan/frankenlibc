@@ -48,6 +48,8 @@ extern "C" {
 //
 // (Must work from interrupt context)
 //
+#define malloc uspi_malloc
+#define free uspi_free
 void *malloc (unsigned nSize);		// result must be 4-byte aligned
 void free (void *pBlock);
 
