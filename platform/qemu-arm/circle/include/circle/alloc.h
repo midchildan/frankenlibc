@@ -28,6 +28,15 @@
 extern "C" {
 #endif
 
+#if STDLIB_SUPPORT >= 2
+#define malloc		circle_malloc
+#define free		circle_free
+#define calloc		circle_calloc
+#define realloc		circle_realloc
+#define palloc		circle_palloc
+#define pfree		circle_pfree
+#endif
+
 void mem_init (unsigned long ulBase, unsigned long ulSize);
 
 unsigned long mem_get_size (void);

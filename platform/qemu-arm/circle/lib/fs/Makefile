@@ -22,8 +22,8 @@ CIRCLEHOME = ../..
 
 OBJS	= partition.o partitionmanager.o
 
-libfs.a: $(OBJS)
+libcirclefs.o: $(OBJS)
 	rm -f $@
-	$(AR) cr $@ $(OBJS)
+	$(LD) -r $(OBJS) -o $@
 
 include $(CIRCLEHOME)/Rules.mk

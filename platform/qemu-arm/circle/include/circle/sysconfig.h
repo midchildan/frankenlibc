@@ -30,12 +30,6 @@
 
 #define MEGABYTE		0x100000	// do not change
 
-// KERNEL_MAX_SIZE is the maximum allowed size of a built kernel image.
-// If your kernel image contains big data areas it may be required to
-// increase this value. The value must be a multiple of 16 KByte.
-
-#define KERNEL_MAX_SIZE		(2 * MEGABYTE)
-
 ///////////////////////////////////////////////////////////////////////
 //
 // Raspberry Pi 1 and Zero
@@ -158,12 +152,12 @@
 // The default keyboard map can be overwritten in with the keymap=
 // option in cmdline.txt.
 
-#define DEFAULT_KEYMAP		"DE"
+//#define DEFAULT_KEYMAP		"DE"
 //#define DEFAULT_KEYMAP		"ES"
 //#define DEFAULT_KEYMAP		"FR"
 //#define DEFAULT_KEYMAP		"IT"
 //#define DEFAULT_KEYMAP		"UK"
-//#define DEFAULT_KEYMAP		"US"
+#define DEFAULT_KEYMAP		"US"
 
 ///////////////////////////////////////////////////////////////////////
 //

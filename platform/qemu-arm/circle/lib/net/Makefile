@@ -29,8 +29,8 @@ OBJS	= netsubsystem.o nettask.o netsocket.o socket.o \
 	  dnsclient.o ntpclient.o mqttclient.o mqttsendpacket.o mqttreceivepacket.o \
 	  dhcpclient.o ntpdaemon.o httpdaemon.o httpclient.o tftpdaemon.o syslogdaemon.o
 
-libnet.a: $(OBJS)
-	rm -f libnet.a
-	$(AR) cr libnet.a $(OBJS)
+libcirclenet.o: $(OBJS)
+	rm -f $@
+	$(LD) -r $(OBJS) -o $@
 
 include $(CIRCLEHOME)/Rules.mk

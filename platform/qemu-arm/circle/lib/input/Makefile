@@ -23,8 +23,8 @@ CIRCLEHOME = ../..
 OBJS	= keyboardbehaviour.o keymap.o mousebehaviour.o touchscreen.o \
 	  console.o keyboardbuffer.o linediscipline.o
 
-libinput.a: $(OBJS)
-	rm -f libinput.a
-	$(AR) cr libinput.a $(OBJS)
+libcircleinput.o: $(OBJS)
+	rm -f $@
+	$(LD) -r $(OBJS) -o $@
 
 include $(CIRCLEHOME)/Rules.mk

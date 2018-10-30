@@ -7,8 +7,8 @@
 
 	.text
 
-	.globl	memcpy
-memcpy:
+	.globl	circle_memcpy
+circle_memcpy:
 	push	{r0}
 
 	cmp	r2, #127

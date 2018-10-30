@@ -29,6 +29,7 @@ extern "C" {
 #if STDLIB_SUPPORT >= 2
 
 #define memcmp		circle_memcmp
+#define memset		circle_memset
 #define strlen		circle_strlen
 #define strcmp		circle_strcmp
 #define strcasecmp	circle_strcasecmp
@@ -44,6 +45,7 @@ extern "C" {
 
 void *memset (void *pBuffer, int nValue, size_t nLength);
 
+#define memcpy circle_memcpy
 void *memcpy (void *pDest, const void *pSrc, size_t nLength);
 #define memcpyblk memcpy
 

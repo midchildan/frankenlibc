@@ -24,6 +24,8 @@
  */
 #include <circle/sysconfig.h>
 
+.extern sysinit
+
 /*
  * Helper macro to enter SVC mode cleanly and mask interrupts. reg is
  * a scratch register for the macro to overwrite.

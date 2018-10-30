@@ -22,8 +22,8 @@ CIRCLEHOME = ../..
 
 OBJS	= task.o scheduler.o taskswitch.o synchronizationevent.o
 
-libsched.a: $(OBJS)
+libcirclesched.o: $(OBJS)
 	rm -f $@
-	$(AR) cr $@ $(OBJS)
+	$(LD) -r $(OBJS) -o $@
 
 include $(CIRCLEHOME)/Rules.mk

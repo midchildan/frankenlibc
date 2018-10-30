@@ -26,9 +26,10 @@ OBJS	= actled.o alloc.o bcmmailbox.o bcmpropertytags.o gpiopin.o gpiopinfiq.o \
 	  gpiomanager.o gpioclock.o dmachannel.o pwmsounddevice.o pwmsoundbasedevice.o pwmoutput.o tracer.o \
 	  i2cmaster.o i2cslave.o spimaster.o spimasterdma.o virtualgpiopin.o machineinfo.o \
 	  multicore.o spinlock.o bcmrandom.o cache-v7.o cputhrottle.o i2ssoundbasedevice.o \
-	  soundbasedevice.o ptrarray.o ptrlist.o classallocator.o time.o spimasteraux.o
+	  soundbasedevice.o ptrarray.o ptrlist.o classallocator.o time.o spimasteraux.o \
+	  kernel.o
 
-all: startup.o libcircle.a
+all: startup.o libcircle.o
 
 startup.o: startup.S
 
@@ -42,6 +43,6 @@ ifneq ($(strip $(STDLIB_SUPPORT)),3)
 OBJS	+= new.o purecall.o
 endif
 
-libcircle.a: $(OBJS)
-	rm -f libcircle.a
-	$(AR) cr libcircle.a $(OBJS)
+libcircle.o: $(OBJS)
+	rm -f $@
+	$(LD) -r $(OBJS) -o $@

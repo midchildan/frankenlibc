@@ -21,6 +21,7 @@
 #include <circle/memio.h>
 #include <circle/bcm2835.h>
 #include <circle/bcm2836.h>
+#include <circle/kernel.h>
 #include <circle/machineinfo.h>
 #include <circle/memory.h>
 #include <circle/synchronize.h>
@@ -149,8 +150,8 @@ void sysinit (void)
 
 	// clear BSS
 	extern unsigned char __bss_start;
-	extern unsigned char _end;
-	for (unsigned char *pBSS = &__bss_start; pBSS < &_end; pBSS++)
+	extern unsigned char __bss_end;
+	for (unsigned char *pBSS = &__bss_start; pBSS < &__bss_end; pBSS++)
 	{
 		*pBSS = 0;
 	}
@@ -162,15 +163,14 @@ void sysinit (void)
 #endif
 
 	// call construtors of static objects
-	extern void (*__init_start) (void);
-	extern void (*__init_end) (void);
-	for (void (**pFunc) (void) = &__init_start; pFunc < &__init_end; pFunc++)
+	extern void (*__circle_init_start) (void);
+	extern void (*__circle_init_end) (void);
+	for (void (**pFunc) (void) = &__circle_init_start; pFunc < &__circle_init_end; pFunc++)
 	{
 		(**pFunc) ();
 	}
 
-	extern int main (void);
-	if (main () == EXIT_REBOOT)
+	if (cr_main () == EXIT_REBOOT)
 	{
 		reboot ();
 	}

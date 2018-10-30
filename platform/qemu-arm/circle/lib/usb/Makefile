@@ -29,8 +29,8 @@ OBJS	= dwhcidevice.o dwhciregister.o dwhcixferstagedata.o dwhcixactqueue.o \
 	  usbfunction.o \
 	  dwhciframeschednsplit.o usbprinter.o usbbluetooth.o usbmidi.o usbcdcethernet.o
 
-libusb.a: $(OBJS)
-	rm -f libusb.a
-	$(AR) cr libusb.a $(OBJS)
+libcircleusb.o: $(OBJS)
+	rm -f $@
+	$(LD) -r $(OBJS) -o $@
 
 include $(CIRCLEHOME)/Rules.mk

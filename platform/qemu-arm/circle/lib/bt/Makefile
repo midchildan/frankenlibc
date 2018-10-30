@@ -25,9 +25,9 @@ OBJS	= btsubsystem.o bttask.o \
 	  bthcilayer.o btdevicemanager.o \
 	  btqueue.o btuarttransport.o
 
-libbluetooth.a: $(OBJS)
+libcirclebluetooth.o: $(OBJS)
 	rm -f $@
-	$(AR) cr $@ $(OBJS)
+	$(LD) -r $(OBJS) -o $@
 
 EXTRACLEAN = BCM43430A1.h converttool
 

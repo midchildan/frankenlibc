@@ -22,8 +22,8 @@ CIRCLEHOME = ../../..
 
 OBJS	= fatfs.o fatcache.o fatinfo.o fat.o fatdir.o
 
-libfatfs.a: $(OBJS)
+libcirclefatfs.o: $(OBJS)
 	rm -f $@
-	$(AR) cr $@ $(OBJS)
+	$(LD) -r $(OBJS) -o $@
 
 include $(CIRCLEHOME)/Rules.mk
