@@ -46,5 +46,7 @@ SECTIONS
 		*(.bss* COMMON)
 		__bss_end = .;
 	}
+	__iomem_start = .;
+	. = . + 0x100000000;
 	__kernel_end = .;
 }

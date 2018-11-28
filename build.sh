@@ -634,6 +634,7 @@ CC="${BINDIR}/${COMPILER}" \
 	RUMPDIR="${OUTDIR}" \
 	RUMPOBJ="${RUMPOBJ}" \
 	BINDIR="${BINDIR}" \
+	OS="${OS}" \
 	${MAKE} ${STDJ} -C tests
 
 # test for executable stack
