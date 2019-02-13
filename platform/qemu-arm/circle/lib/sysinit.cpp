@@ -89,7 +89,7 @@ void halt (void)
 #ifndef USE_RPI_STUB_AT
 	DisableFIQs ();
 #endif
-	
+
 	for (;;)
 	{
 #if RASPPI != 1
@@ -170,12 +170,7 @@ void sysinit (void)
 		(**pFunc) ();
 	}
 
-	if (cr_main () == EXIT_REBOOT)
-	{
-		reboot ();
-	}
-
-	halt ();
+	cr_main();
 }
 
 #ifdef ARM_ALLOW_MULTI_CORE

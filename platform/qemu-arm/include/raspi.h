@@ -16,6 +16,8 @@ int cr_sendframe(const void *pBuffer, unsigned nLength);
 // pBuffer must have size FRAME_BUFFER_SIZE
 int cr_recvframe(void *pBuffer, unsigned *pResultLength);
 
+void cr_exit(int status) __attribute__ ((noreturn));
+
 #ifdef __cplusplus
 }
 #endif

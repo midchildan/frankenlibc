@@ -21,7 +21,7 @@ extern int __franken_start_main(mainfn_t, int, const char **, const char **);
 extern int main(int, char**, char**);
 }
 
-int cr_main(void);
+void cr_main(void);
 
 class CKernel {
     public:
@@ -30,17 +30,22 @@ class CKernel {
 
 	boolean Initialize(void);
 
-	inline int GetArgc(void)
+	inline int GetArgc(void) const
 	{
 		return m_Options.GetArgc();
 	}
-	inline const char **GetArgv(void)
+	inline const char **GetArgv(void) const
 	{
 		return m_Options.GetArgv();
 	}
-	inline const char **GetEnvp(void)
+	inline const char **GetEnvp(void) const
 	{
 		return m_Options.GetEnvp();
+	}
+
+	inline boolean UseSemihosting (void) const
+	{
+		return m_Options.UseSemihosting();
 	}
 
 	inline boolean ReceiveFrame(void *pBuffer, unsigned *pResultLength)

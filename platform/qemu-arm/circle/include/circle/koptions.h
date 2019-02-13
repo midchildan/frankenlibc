@@ -45,6 +45,8 @@ public:
 	TCPUSpeed GetCPUSpeed (void) const;
 	unsigned GetSoCMaxTemp (void) const;
 
+	bool UseSemihosting (void) const;
+
 	int GetArgc (void) const;
 	const char **GetArgv (void) const;
 	const char **GetEnvp (void) const;
@@ -52,6 +54,8 @@ public:
 	static CKernelOptions *Get (void);
 
 private:
+	bool FetchCmdline(TPropertyTagCommandLine *pTagCommandLine); // returns true on success, false on failure
+
 	void ApplyOption (char *pOption, char *pValue);
 	char *GetToken (void);				// returns next "option=value" pair, 0 if nothing follows
 
@@ -81,6 +85,13 @@ private:
 
 	TCPUSpeed m_CPUSpeed;
 	unsigned m_nSoCMaxTemp;
+
+	// Semihosting is initially disabled because it is not safe to use on
+	// unsupported platforms. It is eventually turned on by default later in
+	// the initialization sequence. We require that semihosting be
+	// explicitly turned off via the command line options, since we lack a
+	// reliable way to detect its support.
+	bool m_UseSemihosting = false;
 
 	static constexpr size_t k_MaxArgc = 20;
 	static constexpr size_t k_MaxEnvp = 20;

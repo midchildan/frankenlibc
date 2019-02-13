@@ -1,4 +1,5 @@
 #include <circle/kernel.h>
+#include <circle/semihost.h>
 #include <circle/startup.h>
 #include "../../include/raspi.h"
 
@@ -65,22 +66,42 @@ extern "C" int cr_recvframe(void *pBuffer, unsigned *pResultLength)
 	return s_kernel ? s_kernel->ReceiveFrame(pBuffer, pResultLength) : 0;
 }
 
-int cr_main(void)
+extern "C" void cr_exit(int status)
+{
+	if (!s_kernel) {
+		goto fallback;
+	}
+
+	if (s_kernel->UseSemihosting()) {
+		auto reason = semihost::kStopApplicationExit;
+		if (status != 0) {
+			reason = semihost::kStopInternalError;
+		}
+		semihost::Exit(reason);
+	}
+
+fallback:
+	s_kernel = nullptr;
+	halt();
+}
+
+void cr_main(void)
 {
 	CKernel kernel;
 	s_kernel = &kernel;
+	int exitCode = 0;
 
         int argc = kernel.GetArgc();
         const char **argv = kernel.GetArgv();
         const char **envp = kernel.GetEnvp();
 
 	if (!kernel.Initialize()) {
+		exitCode = -1;
 		goto exit;
 	}
 
-	__franken_start_main(main, argc, argv, envp);
+	exitCode = __franken_start_main(main, argc, argv, envp);
 
 exit:
-	s_kernel = nullptr;
-	return EXIT_HALT;
+	cr_exit(exitCode);
 }

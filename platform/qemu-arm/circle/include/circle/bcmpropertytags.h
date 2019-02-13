@@ -229,8 +229,9 @@ struct TPropertyTagSetPalette
 
 struct TPropertyTagCommandLine
 {
+	static constexpr size_t kMaxLen = 2048;
 	TPropertyTag	Tag;
-	u8		String[2048];
+	u8		String[kMaxLen];
 };
 
 class CBcmPropertyTags

@@ -20,6 +20,7 @@
 #include <circle/koptions.h>
 #include <circle/logger.h>
 #include <circle/util.h>
+#include <circle/semihost.h>
 #include <circle/sysconfig.h>
 
 #define INVALID_VALUE	((unsigned) -1)
@@ -41,8 +42,7 @@ CKernelOptions::CKernelOptions (void)
 
 	s_pThis = this;
 
-	CBcmPropertyTags Tags;
-	if (!Tags.GetTag (PROPTAG_GET_COMMAND_LINE, &m_TagCommandLine, sizeof m_TagCommandLine))
+	if (!FetchCmdline(&m_TagCommandLine))
 	{
 		return;
 	}
@@ -52,7 +52,7 @@ CKernelOptions::CKernelOptions (void)
 		return;
 	}
 	m_TagCommandLine.String[m_TagCommandLine.Tag.nValueLength] = '\0';
-	
+
 	m_pOptions = (char *) m_TagCommandLine.String;
 
 	char *pOption;
@@ -119,6 +119,11 @@ TCPUSpeed CKernelOptions::GetCPUSpeed (void) const
 unsigned CKernelOptions::GetSoCMaxTemp (void) const
 {
 	return m_nSoCMaxTemp;
+}
+
+bool CKernelOptions::UseSemihosting (void) const
+{
+	return m_UseSemihosting;
 }
 
 int CKernelOptions::GetArgc (void) const
@@ -223,6 +228,10 @@ void CKernelOptions::ApplyOption (char *pOption, char *pValue)
 	{
 		m_Envp[m_nEnv] = pValue;
 		m_nEnv++;
+	}
+	else if (strcmp (pOption, "semihosting") == 0)
+	{
+		m_UseSemihosting = (strcmp (pValue, "true") == 0);
 	}
 }
 
@@ -356,4 +365,30 @@ char *CKernelOptions::GetArgvToken (void)
 		m_pOptions++;
 	}
 	return pToken;
+}
+
+bool CKernelOptions::FetchCmdline (TPropertyTagCommandLine *pTagCommandLine)
+{
+	CBcmPropertyTags Tags;
+	if (Tags.GetTag (PROPTAG_GET_COMMAND_LINE, pTagCommandLine, sizeof (*pTagCommandLine)))
+	{
+		return true;
+	}
+
+	// We require that semihosting be explicitly turned off via the command
+	// line, since we lack a way to reliably detect its support. Since
+	// our first attempt resulted in an empty command line, we regard
+	// semihosting to have been turned on at this point.
+	m_UseSemihosting = true;
+
+	// Retry with semihosting, since QEMU currently doesn't support
+	// returning the command line through the mailbox property interface.
+	auto nLen = semihost::GetCommandLine (pTagCommandLine->String, pTagCommandLine->kMaxLen);
+	if (nLen > 0)
+	{
+		pTagCommandLine->Tag.nValueLength = nLen;
+		return true;
+	}
+
+	return false;
 }
