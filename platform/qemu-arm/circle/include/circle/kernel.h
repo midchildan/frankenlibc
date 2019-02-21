@@ -29,6 +29,20 @@ class CKernel {
 	~CKernel(void) = default;
 
 	boolean Initialize(void);
+
+	inline int GetArgc(void)
+	{
+		return m_Options.GetArgc();
+	}
+	inline const char **GetArgv(void)
+	{
+		return m_Options.GetArgv();
+	}
+	inline const char **GetEnvp(void)
+	{
+		return m_Options.GetEnvp();
+	}
+
 	inline boolean ReceiveFrame(void *pBuffer, unsigned *pResultLength)
 	{
 		return m_Eth0->ReceiveFrame(pBuffer, pResultLength);

@@ -43,9 +43,6 @@ boolean CKernel::Initialize(void)
 }
 
 size_t __hwcap = 407;
-int argc = 1;
-const char *argv[2] = { "qemu-arm", "\0" };
-const char *envp[2] = { "RUMP_VERBOSE=1", "\0" };
 
 extern "C" int cr_read(void *pBuffer, unsigned nLength)
 {
@@ -72,6 +69,11 @@ int cr_main(void)
 {
 	CKernel kernel;
 	s_kernel = &kernel;
+
+        int argc = kernel.GetArgc();
+        const char **argv = kernel.GetArgv();
+        const char **envp = kernel.GetEnvp();
+
 	if (!kernel.Initialize()) {
 		goto exit;
 	}

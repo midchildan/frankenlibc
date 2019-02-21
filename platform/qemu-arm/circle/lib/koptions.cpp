@@ -59,84 +59,11 @@ CKernelOptions::CKernelOptions (void)
 	while ((pOption = GetToken ()) != 0)
 	{
 		char *pValue = GetOptionValue (pOption);
-
-		if (strcmp (pOption, "width") == 0)
-		{
-			unsigned nValue;
-			if (   (nValue = GetDecimal (pValue)) != INVALID_VALUE
-			    && 640 <= nValue && nValue <= 1980)
-			{
-				m_nWidth = nValue;
-			}
-		}
-		else if (strcmp (pOption, "height") == 0)
-		{
-			unsigned nValue;
-			if (   (nValue = GetDecimal (pValue)) != INVALID_VALUE
-			    && 480 <= nValue && nValue <= 1080)
-			{
-				m_nHeight = nValue;
-			}
-		}
-		else if (strcmp (pOption, "logdev") == 0)
-		{
-			strncpy (m_LogDevice, pValue, sizeof m_LogDevice-1);
-			m_LogDevice[sizeof m_LogDevice-1] = '\0';
-		}
-		else if (strcmp (pOption, "loglevel") == 0)
-		{
-			unsigned nValue;
-			if (   (nValue = GetDecimal (pValue)) != INVALID_VALUE
-			    && nValue <= LogDebug)
-			{
-				m_nLogLevel = nValue;
-			}
-		}
-		else if (strcmp (pOption, "keymap") == 0)
-		{
-			strncpy (m_KeyMap, pValue, sizeof m_KeyMap-1);
-			m_KeyMap[sizeof m_KeyMap-1] = '\0';
-		}
-		else if (strcmp (pOption, "usbpowerdelay") == 0)
-		{
-			unsigned nValue;
-			if (   (nValue = GetDecimal (pValue)) != INVALID_VALUE
-			    && 200 <= nValue && nValue <= 8000)
-			{
-				m_nUSBPowerDelay = nValue;
-			}
-		}
-		else if (strcmp (pOption, "sounddev") == 0)
-		{
-			strncpy (m_SoundDevice, pValue, sizeof m_SoundDevice-1);
-			m_SoundDevice[sizeof m_SoundDevice-1] = '\0';
-		}
-		else if (strcmp (pOption, "soundopt") == 0)
-		{
-			unsigned nValue;
-			if (   (nValue = GetDecimal (pValue)) != INVALID_VALUE
-			    && nValue <= 2)
-			{
-				m_nSoundOption = nValue;
-			}
-		}
-		else if (strcmp (pOption, "fast") == 0)
-		{
-			if (strcmp (pValue, "true") == 0)
-			{
-				m_CPUSpeed = CPUSpeedMaximum;
-			}
-		}
-		else if (strcmp (pOption, "socmaxtemp") == 0)
-		{
-			unsigned nValue;
-			if (   (nValue = GetDecimal (pValue)) != INVALID_VALUE
-			    && 40 <= nValue && nValue <= 78)
-			{
-				m_nSoCMaxTemp = nValue;
-			}
-		}
+		ApplyOption (pOption, pValue);
 	}
+
+	m_Argc = ParseArgv ();
+	m_Envp[m_nEnv] = const_cast<char*>("\0");
 }
 
 CKernelOptions::~CKernelOptions (void)
@@ -194,9 +121,109 @@ unsigned CKernelOptions::GetSoCMaxTemp (void) const
 	return m_nSoCMaxTemp;
 }
 
+int CKernelOptions::GetArgc (void) const
+{
+	return m_Argc;
+}
+
+const char **CKernelOptions::GetArgv (void) const
+{
+	return const_cast<const char**>(m_Argv);
+}
+
+const char **CKernelOptions::GetEnvp (void) const
+{
+	return const_cast<const char**>(m_Envp);
+}
+
 CKernelOptions *CKernelOptions::Get (void)
 {
 	return s_pThis;
+}
+
+void CKernelOptions::ApplyOption (char *pOption, char *pValue)
+{
+	if (strcmp (pOption, "width") == 0)
+	{
+		unsigned nValue;
+		if (   (nValue = GetDecimal (pValue)) != INVALID_VALUE
+		    && 640 <= nValue && nValue <= 1980)
+		{
+			m_nWidth = nValue;
+		}
+	}
+	else if (strcmp (pOption, "height") == 0)
+	{
+		unsigned nValue;
+		if (   (nValue = GetDecimal (pValue)) != INVALID_VALUE
+		    && 480 <= nValue && nValue <= 1080)
+		{
+			m_nHeight = nValue;
+		}
+	}
+	else if (strcmp (pOption, "logdev") == 0)
+	{
+		strncpy (m_LogDevice, pValue, sizeof m_LogDevice-1);
+		m_LogDevice[sizeof m_LogDevice-1] = '\0';
+	}
+	else if (strcmp (pOption, "loglevel") == 0)
+	{
+		unsigned nValue;
+		if (   (nValue = GetDecimal (pValue)) != INVALID_VALUE
+		    && nValue <= LogDebug)
+		{
+			m_nLogLevel = nValue;
+		}
+	}
+	else if (strcmp (pOption, "keymap") == 0)
+	{
+		strncpy (m_KeyMap, pValue, sizeof m_KeyMap-1);
+		m_KeyMap[sizeof m_KeyMap-1] = '\0';
+	}
+	else if (strcmp (pOption, "usbpowerdelay") == 0)
+	{
+		unsigned nValue;
+		if (   (nValue = GetDecimal (pValue)) != INVALID_VALUE
+		    && 200 <= nValue && nValue <= 8000)
+		{
+			m_nUSBPowerDelay = nValue;
+		}
+	}
+	else if (strcmp (pOption, "sounddev") == 0)
+	{
+		strncpy (m_SoundDevice, pValue, sizeof m_SoundDevice-1);
+		m_SoundDevice[sizeof m_SoundDevice-1] = '\0';
+	}
+	else if (strcmp (pOption, "soundopt") == 0)
+	{
+		unsigned nValue;
+		if (   (nValue = GetDecimal (pValue)) != INVALID_VALUE
+		    && nValue <= 2)
+		{
+			m_nSoundOption = nValue;
+		}
+	}
+	else if (strcmp (pOption, "fast") == 0)
+	{
+		if (strcmp (pValue, "true") == 0)
+		{
+			m_CPUSpeed = CPUSpeedMaximum;
+		}
+	}
+	else if (strcmp (pOption, "socmaxtemp") == 0)
+	{
+		unsigned nValue;
+		if (   (nValue = GetDecimal (pValue)) != INVALID_VALUE
+		    && 40 <= nValue && nValue <= 78)
+		{
+			m_nSoCMaxTemp = nValue;
+		}
+	}
+	else if (strcmp (pOption, "env") == 0 && m_nEnv < k_MaxEnvp - 1)
+	{
+		m_Envp[m_nEnv] = pValue;
+		m_nEnv++;
+	}
 }
 
 char *CKernelOptions::GetToken (void)
@@ -228,6 +255,10 @@ char *CKernelOptions::GetToken (void)
 		}
 
 		m_pOptions++;
+	}
+
+	if (strcmp (pToken, "--") == 0) {
+		return 0;
 	}
 
 	return pToken;
@@ -284,4 +315,45 @@ unsigned CKernelOptions::GetDecimal (char *pString)
 	}
 
 	return nResult;
+}
+
+int CKernelOptions::ParseArgv (void)
+{
+	int argc = 0;
+
+	for (int i = 0; i < k_MaxArgc - 1; i++) {
+		auto token = GetArgvToken();
+		if (token == nullptr)
+		{
+			argc = i;
+			break;
+		}
+		m_Argv[i] = token;
+		argc++;
+	}
+
+	m_Argv[argc] = const_cast<char*>("\0");
+	return argc;
+}
+
+char *CKernelOptions::GetArgvToken (void)
+{
+	for ( ; *m_pOptions == ' '; m_pOptions++)
+		; // skip leading spaces
+
+	char *pToken = m_pOptions;
+	if (*pToken == '\0')
+	{
+		return nullptr;
+	}
+
+	for ( ; *m_pOptions != ' ' && *m_pOptions != '\0'; m_pOptions++)
+		; // find the end of the current token
+
+	if (*m_pOptions == ' ')
+	{
+		*m_pOptions = '\0';
+		m_pOptions++;
+	}
+	return pToken;
 }

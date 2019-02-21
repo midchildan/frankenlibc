@@ -45,10 +45,18 @@ public:
 	TCPUSpeed GetCPUSpeed (void) const;
 	unsigned GetSoCMaxTemp (void) const;
 
+	int GetArgc (void) const;
+	const char **GetArgv (void) const;
+	const char **GetEnvp (void) const;
+
 	static CKernelOptions *Get (void);
 
 private:
+	void ApplyOption (char *pOption, char *pValue);
 	char *GetToken (void);				// returns next "option=value" pair, 0 if nothing follows
+
+	int ParseArgv (void);
+	char *GetArgvToken (void);
 
 	static char *GetOptionValue (char *pOption);	// returns value and terminates option with '\0'
 
@@ -73,6 +81,13 @@ private:
 
 	TCPUSpeed m_CPUSpeed;
 	unsigned m_nSoCMaxTemp;
+
+	static constexpr size_t k_MaxArgc = 20;
+	static constexpr size_t k_MaxEnvp = 20;
+	int m_Argc = 0;
+	char *m_Argv[k_MaxArgc];
+	int m_nEnv = 0;
+	char *m_Envp[k_MaxEnvp];
 
 	static CKernelOptions *s_pThis;
 };
