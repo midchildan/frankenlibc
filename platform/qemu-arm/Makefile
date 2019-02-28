@@ -9,6 +9,7 @@ CRTFILES=$(CRTDIR)/startup.o $(CRTDIR)/crt0.o
 CRTFILES+=$(CRTDIR)/crti.o $(CRTDIR)/crtn.o
 CRTFILES+=$(CRTDIR)/crtbegin.o $(CRTDIR)/crtbeginT.o
 CRTFILES+=$(CRTDIR)/crtend.o
+CRTFILES+=$(CRTDIR)/link.ld
 OBJ=$(CRTFILES)
 LIBG=$(CRTDIR)/libg.a
 OBJ+=$(LIBG)
@@ -38,7 +39,7 @@ OBJ+=$(OBJDIR)/libcircle.o
 OBJ+=$(OBJDIR)/libcircleusb.o
 OBJ+=$(OBJDIR)/libcircleinput.o
 OBJ+=$(OBJDIR)/libcirclefs.o
-HEADERS=$(CRTDIR) $(OBJDIR)
+HEADERS=$(CRTDIR) $(OBJDIR) circle
 INCLUDES=-I../include -I../../franken/include -I.
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
@@ -72,6 +73,9 @@ $(CRTDIR)/crtbeginT.o:		$(CRTDIR)
 
 $(CRTDIR)/crtend.o:		$(CRTDIR)
 				printf "\n" | $(COMPILE.c) -o $@ -x c -
+
+$(CRTDIR)/link.ld:		link.ld $(CRTDIR)
+				$(INSTALL) -m644 $< $@
 
 $(LIBG):			$(CRTDIR)
 				printf "\n" | $(COMPILE.c) -o $(OBJDIR)/g.o -x c -
@@ -156,6 +160,10 @@ $(OBJDIR)/libcircleinput.o:	circle/lib/input/libcircleinput.o $(HEADERS)
 
 $(OBJDIR)/libcirclefs.o:	circle/lib/fs/libcirclefs.o $(HEADERS)
 				$(INSTALL) $< $@
+
+circle: circle/lib/startup.o circle/lib/libcircle.o
+circle: circle/lib/usb/libcircleusb.o circle/lib/input/libcircleinput.o
+circle: circle/lib/fs/libcirclefs.o
 
 circle/lib/startup.o:
 	$(MAKE) -C circle/lib $(notdir $@) $(CIRCLE_FLAGS)

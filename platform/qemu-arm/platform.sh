@@ -14,7 +14,7 @@ appendvar EXTRA_AFLAGS "-march=armv7-a -marm -mfpu=neon-vfpv4 -D__SOFTFP__"
 # this compiler is very fussy, planning to fix these issues at some point
 appendvar EXTRA_CWARNFLAGS "-Wno-error"
 
-LINKSCRIPT="${PWD}/platform/qemu-arm/link.ld"
+LINKSCRIPT="${OUTDIR}/lib/link.ld"
 EXTRA_LDSCRIPT="-T ${LINKSCRIPT}"
 EXTRA_LDSCRIPT_CC="-Wl,-T,${LINKSCRIPT}"
 

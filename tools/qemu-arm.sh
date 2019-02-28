@@ -1,20 +1,31 @@
 #!/bin/bash
 
-LKL_TAP="${LKL_TAP:-tap0}"
+LKL_TAP="${LKL_TAP:-none}"
 LKL_DEBUG="${LKL_DEBUG:-1}"
 LKL_QEMU_CMDLINE=
 BIN_PATH="$1"
 
 main() {
-  sudo env PATH="$PATH" \
+  if [[ "$LKL_TAP" != "none" ]]; then
+    sudo env PATH="$PATH" \
+      qemu-system-arm \
+        $LKL_QEMU_ARGS \
+        -M raspi2 \
+        -nographic \
+        -device usb-net,vlan=0 \
+        -net tap,vlan=0,ifname="$LKL_TAP",script=no,downscript=no \
+        -append "$(build_qemu_cmdline "$@")" \
+        -semihosting -kernel "$BIN_PATH"
+  else
     qemu-system-arm \
       $LKL_QEMU_ARGS \
       -M raspi2 \
       -nographic \
       -device usb-net,vlan=0 \
-      -net tap,vlan=0,ifname="$LKL_TAP",script=no,downscript=no \
+      -net user,vlan=0 \
       -append "$(build_qemu_cmdline "$@")" \
       -semihosting -kernel "$BIN_PATH"
+  fi
 }
 
 build_qemu_cmdline() {
